@@ -1,0 +1,10 @@
+#!/bin/bash
+STACK_NAME="prod-infrastructure-stack"
+TEMPLATE_FILE="cloudformation/main-template.yml"
+PARAMETERS_FILE="cloudformation/parameters.yml"
+
+aws cloudformation deploy \
+    --template-file $TEMPLATE_FILE \
+    --stack-name $STACK_NAME \
+    --parameter-overrides file://$PARAMETERS_FILE \
+    --capabilities CAPABILITY_IAM
