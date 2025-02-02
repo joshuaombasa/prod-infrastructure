@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  CodePipeline:
+    Type: 'AWS::CodePipeline::Pipeline'
+    Properties:
+      Name: 'ProductionPipeline'
+      RoleArn: arn:aws:iam::account-id:role/CodePipelineRole
+      ArtifactStore:
+        Type: 'S3'
+        Location: 'my-pipeline-artifacts-bucket'
+      Stages:
+        - Name: 'Source'
+          Actions:
+            - Name: 'SourceAction'
+              ActionTypeId:
+                Category: 'Source'
+                Owner: 'ThirdParty'
+                Provider: 'GitHub'
+                Version: '1'
+              OutputArtifacts:
+                - Name: 'SourceOutput'
+              Configuration:
+                Owner: 'my-github-username'
+                Repo: 'prod-infrastructure'
+                Branch: 'main'
+                OAuthToken: arn:aws:secretsmanager:region:account-id:secret:github-token
+        - Name: 'Build'
+          Actions:
+            - Name: 'BuildAction'
+              ActionTypeId:
+                Category: 'Build'
+                Owner: 'AWS'
+                Provider: 'CodeBuild'
+                Version: '1'
+              InputArtifacts:
+                - Name: 'SourceOutput'
+              OutputArtifacts:
+                - Name: 'BuildOutput'
+              Configuration:
+                ProjectName: 'CodeBuild-Prod-Infrastructure'
+        - Name: 'Deploy'
+          Actions:
+            - Name: 'DeployAction'
+              ActionTypeId:
+                Category: 'Deploy'
+                Owner: 'AWS'
+                Provider: 'CloudFormation'
+                Version: '1'
+              InputArtifacts:
+                - Name: 'BuildOutput'
+              Configuration:
+                StackName: 'prod-infrastructure-stack'
+                ActionMode: 'CREATE_UPDATE'
+                TemplatePath: 'BuildOutput::cloudformation/main-template.yml'
+                Capabilities: 'CAPABILITY_IAM'
