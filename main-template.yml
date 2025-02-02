@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Production Infrastructure Setup for Auto-Scaling, RDS, and High Availability"
+
+Resources:
+  VPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsSupport: "true"
+      EnableDnsHostnames: "true"
+
+  # Subnets
+  PublicSubnetA:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: "10.0.1.0/24"
+      AvailabilityZone: "us-east-1a"
+      MapPublicIpOnLaunch: "true"
+
+  # More subnets, security groups, EC2 instances, load balancers, etc. as per earlier examples...
+  
+  # RDS for Database
+  RDSInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceIdentifier: "prod-db"
+      AllocatedStorage: "20"
+      DBInstanceClass: "db.t3.medium"
+      Engine: "mysql"
+      MasterUsername: "admin"
+      MasterUserPassword: "password"
+      BackupRetentionPeriod: 7
+      MultiAZ: "true"
+      VPCSecurityGroups:
+        - !Ref SecurityGroup
+
+Outputs:
+  VPCId:
+    Description: "VPC ID"
+    Value: !Ref VPC
+  EC2InstanceId:
+    Description: "EC2 Instance ID"
+    Value: !Ref EC2Instance
