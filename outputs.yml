@@ -1,0 +1,7 @@
+Outputs:
+  InstanceId:
+    Description: "EC2 Instance ID"
+    Value: !Ref EC2Instance
+  DBInstanceEndpoint:
+    Description: "RDS Endpoint"
+    Value: !GetAtt RDSInstance.Endpoint.Address
