@@ -1,0 +1,11 @@
+# Ignore node_modules or other dependencies
+node_modules/
+
+# Ignore AWS configuration files
+.aws/
+
+# Ignore build outputs
+build/
+
+# Ignore sensitive files
+*.env
