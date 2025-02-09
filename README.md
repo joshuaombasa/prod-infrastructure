@@ -13,5 +13,5 @@ To deploy the infrastructure, you can use the `deploy.sh` script. It will use Cl
 ### Steps:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/prod-infrastructure.git
+   git clone https://github.com/joshuaombasa/prod-infrastructure.git
    cd prod-infrastructure
